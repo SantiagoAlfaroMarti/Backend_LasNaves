@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
-import { Person } from '../modules/person/person.entity';
-import { Room } from '../modules/room/room.entity';
-import { Access } from '../modules/access/access.entity';
+import { Person } from '../entities/person/person.entity';
+import { Room } from '../entities/room/room.entity';
+import { Access } from '../entities/access/access.entity';
 import 'reflect-metadata';
 
 // Importa las demás entidades que necesites
