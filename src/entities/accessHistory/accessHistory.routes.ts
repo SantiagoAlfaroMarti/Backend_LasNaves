@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { auth } from "../../middlewares/auth";
-import { getAccessHistories, getRoomAccessHistories } from "./accessHitory.controller";
+import { getAccessHistories, getRoomAccessHistories } from "./accessHistory.controller";
 
 const router = Router()
 
