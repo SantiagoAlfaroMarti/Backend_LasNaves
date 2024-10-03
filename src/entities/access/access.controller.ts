@@ -333,6 +333,33 @@ export const cancelReservation = async (req: Request, res: Response) => {
     }
 }
 
+export const getActiveReservation = async (req: Request, res: Response) => {
+    try {
+        const userId = req.tokenData.id; 
+
+        const activeReservation = await access.findOne({
+            where: {
+                person_id: userId,
+                state: 'active',
+                entry_datetime: MoreThan(new Date()) 
+            }
+        });
+
+        res.status(200).json({
+            success: true,
+            data: activeReservation || null
+        });
+    } catch (error) {
+        console.error('Error getting active reservation:', error);
+        res.status(500).json({
+            success: false,
+            message: "Error getting active reservation",
+            error: error
+        });
+    }
+}
+
+
 
 export const currentRoomOccupants = async (req: Request, res: Response) => {
     try {
