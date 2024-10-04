@@ -35,11 +35,11 @@ export const accessSeeder = async () => {
                     if (isCurrentlyInside) {
                         accessInstance.entry_datetime = new Date(); 
                     } else {
-                        accessInstance.entry_datetime = getRandomDate(new Date("2024-09-01T08:00:00"), new Date("2024-12-31T18:00:00")); // Entre septiembre y diciembre de 2024
+                        accessInstance.entry_datetime = getRandomDate(new Date("2024-09-01T08:00:00"), new Date("2024-12-31T18:00:00"));
                     }
                     accessInstance.exit_datetime = null; 
                 } else if (accessInstance.state === "cancelled") {
-                    accessInstance.entry_datetime = getRandomDate(new Date("2024-09-01T08:00:00"), new Date("2024-10-31T18:00:00")); // Entre septiembre y octubre de 2024
+                    accessInstance.entry_datetime = getRandomDate(new Date("2024-09-01T08:00:00"), new Date("2024-10-31T18:00:00"));
                     accessInstance.exit_datetime = null; 
                 }
 

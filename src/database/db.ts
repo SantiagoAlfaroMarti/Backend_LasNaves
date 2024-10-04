@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import 'dotenv/config';
 import { DataSource } from "typeorm";
-import { Person1726560167856 } from "./migrations/1726560167856-person";
-import { Room1726560205798 } from "./migrations/1726560205798-room";
-import { Access1726560218248 } from "./migrations/1726560218248-access";
-import { AccessHistory1726563877728 } from "./migrations/1726563877728-accessHistory";
-import { Administration1726564013782 } from "./migrations/1726564013782-administration";
+import { Person1727951723364 } from "./migrations/1727951723364-person";
+import { Room1727951957088 } from "./migrations/1727951957088-room";
+import { Access1727951979728 } from "./migrations/1727951979728-access";
+import { AccessHistory1727952058033 } from "./migrations/1727952058033-accessHistory";
+import { Administration1727952131614 } from "./migrations/1727952131614-administration";
 import { person } from "../entities/person/person";
 import { room } from "../entities/room/room";
 import { access } from "../entities/access/access";
@@ -20,7 +20,7 @@ export const AppDataSource = new DataSource({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
     entities: [person, room, access, accessHistory, administration],
-    migrations: [Person1726560167856, Room1726560205798, Access1726560218248, AccessHistory1726563877728, Administration1726564013782],
+    migrations: [Person1727951723364, Room1727951957088, Access1727951979728, AccessHistory1727952058033, Administration1727952131614],
     synchronize: false,
     logging: false,
 })
