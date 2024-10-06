@@ -89,7 +89,6 @@ export const registerEntry = async (req: Request, res: Response) => {
     }
 }
 
-
 export const registerExit = async (req: Request, res: Response) => {
     try {
         // 1. Recuperar la información
@@ -171,7 +170,6 @@ export const registerExit = async (req: Request, res: Response) => {
         });
     }
 };
-
 
 export const registerReserve = async (req: Request, res: Response) => {
     try {
@@ -267,7 +265,6 @@ export const registerReserve = async (req: Request, res: Response) => {
     }
 }
 
-
 export const cancelReservation = async (req: Request, res: Response) => {
     try {
         // 1. Recuperar la información
@@ -358,8 +355,6 @@ export const getActiveReservation = async (req: Request, res: Response) => {
         });
     }
 }
-
-
 
 export const currentRoomOccupants = async (req: Request, res: Response) => {
     try {
