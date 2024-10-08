@@ -44,7 +44,7 @@ export const registerEntry = async (req: Request, res: Response) => {
         if (activeEntry) {
             return res.status(400).json({
                 success: false,
-                message: "User already has an active entry"
+                message: "User already has an active entry or reservation"
             });
         }
 
@@ -88,6 +88,7 @@ export const registerEntry = async (req: Request, res: Response) => {
         });
     }
 }
+
 
 export const registerExit = async (req: Request, res: Response) => {
     try {
@@ -170,6 +171,7 @@ export const registerExit = async (req: Request, res: Response) => {
         });
     }
 };
+
 
 export const registerReserve = async (req: Request, res: Response) => {
     try {
@@ -265,6 +267,7 @@ export const registerReserve = async (req: Request, res: Response) => {
     }
 }
 
+
 export const cancelReservation = async (req: Request, res: Response) => {
     try {
         // 1. Recuperar la información
@@ -355,6 +358,8 @@ export const getActiveReservation = async (req: Request, res: Response) => {
         });
     }
 }
+
+
 
 export const currentRoomOccupants = async (req: Request, res: Response) => {
     try {

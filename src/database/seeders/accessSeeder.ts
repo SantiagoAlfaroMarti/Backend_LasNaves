@@ -13,51 +13,107 @@ export const accessSeeder = async () => {
         await AppDataSource.initialize();
 
         const accessStates: AccessState[] = ["active", "inactive", "cancelled"];
+        let accessCount = 0;
+        const activeUsers = new Set<number>();
+        const todayInactiveUsers = new Set<number>();
+        const currentDate = new Date();
+        const pastDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
 
-        for (let i = 1; i <= 37; i++) { 
+        const recentActiveCount = Math.floor(Math.random() * 7) + 5; 
+        for (let i = 0; i < recentActiveCount; i++) {
+            const userId = Math.floor(Math.random() * 37) + 1;
+            if (!activeUsers.has(userId)) {
+                const accessInstance = new access();
+                accessInstance.person_id = userId;
+                accessInstance.room_id = Math.floor(Math.random() * 6) + 1;
+                accessInstance.state = "active";
+                accessInstance.entry_datetime = new Date(currentDate.getTime() - Math.random() * 3600000); 
+                accessInstance.exit_datetime = null;
+                await accessInstance.save();
+                activeUsers.add(userId);
+                accessCount++;
+            }
+        }
+
+        const todayInactiveCount = Math.floor(Math.random() * 15) + 10; 
+        for (let i = 0; i < todayInactiveCount; i++) {
+            const userId = Math.floor(Math.random() * 37) + 1;
+            if (!activeUsers.has(userId) && !todayInactiveUsers.has(userId)) {
+                const accessInstance = new access();
+                accessInstance.person_id = userId;
+                accessInstance.room_id = Math.floor(Math.random() * 6) + 1;
+                accessInstance.state = "inactive";
+                const entryTime = new Date(currentDate.getTime() - Math.random() * 7200000);
+                accessInstance.entry_datetime = entryTime;
+                accessInstance.exit_datetime = new Date(entryTime.getTime() + 3600000 + Math.random() * 3600000); 
+                await accessInstance.save();
+                todayInactiveUsers.add(userId);
+                accessCount++;
+
+                const historyInstance = new accessHistory();
+                historyInstance.person_id = accessInstance.person_id;
+                historyInstance.room_id = accessInstance.room_id;
+                historyInstance.entry_datetime = accessInstance.entry_datetime;
+                historyInstance.exit_datetime = accessInstance.exit_datetime;
+                await historyInstance.save();
+            }
+        }
+
+        while (accessCount < 160) {
+            const i = Math.floor(Math.random() * 37) + 1; 
+
             if (Math.random() < 0.2) {
                 continue; 
             }
 
-            const numberOfAccesses = Math.floor(Math.random() * 3) + 1; 
+            const accessInstance = new access();
+            accessInstance.person_id = i;
+            accessInstance.room_id = Math.floor(Math.random() * 6) + 1; 
 
-            for (let j = 0; j < numberOfAccesses; j++) {
-                const accessInstance = new access();
-                accessInstance.person_id = i;
-                accessInstance.room_id = Math.floor(Math.random() * 6) + 1; 
-                accessInstance.state = accessStates[Math.floor(Math.random() * accessStates.length)]; 
-
-                if (accessInstance.state === "inactive") {
-                    accessInstance.entry_datetime = new Date(Date.now() - 60 * 60 * 1000);
-                    accessInstance.exit_datetime = new Date();
-                } else if (accessInstance.state === "active") {
-                    const isCurrentlyInside = Math.random() < 0.5; 
-                    if (isCurrentlyInside) {
-                        accessInstance.entry_datetime = new Date(); 
-                    } else {
-                        accessInstance.entry_datetime = getRandomDate(new Date("2024-09-01T08:00:00"), new Date("2024-12-31T18:00:00"));
-                    }
-                    accessInstance.exit_datetime = null; 
-                } else if (accessInstance.state === "cancelled") {
-                    accessInstance.entry_datetime = getRandomDate(new Date("2024-09-01T08:00:00"), new Date("2024-10-31T18:00:00"));
-                    accessInstance.exit_datetime = null; 
-                }
-
-                await accessInstance.save();
-
-                if (accessInstance.state === "inactive") {
-                    const historyInstance = new accessHistory();
-                    historyInstance.person_id = accessInstance.person_id;
-                    historyInstance.room_id = accessInstance.room_id;
-                    historyInstance.entry_datetime = accessInstance.entry_datetime;
-
-                    if (accessInstance.exit_datetime !== null) {
-                        historyInstance.exit_datetime = accessInstance.exit_datetime as Date;
-                    }
-
-                    await historyInstance.save();
+            if (activeUsers.has(i) || todayInactiveUsers.has(i)) {
+                accessInstance.state = Math.random() < 0.7 ? "inactive" : "cancelled";
+            } else {
+                const randomState = Math.random();
+                if (randomState < 0.2) {
+                    accessInstance.state = "active";
+                    accessInstance.entry_datetime = new Date(currentDate.getTime() - Math.random() * 3600000);
+                    accessInstance.exit_datetime = null;
+                    activeUsers.add(i);
+                } else if (randomState < 0.6) {
+                    accessInstance.state = "inactive";
+                } else if (randomState < 0.8) {
+                    accessInstance.state = "active"; 
+                } else {
+                    accessInstance.state = "cancelled";
                 }
             }
+
+            if (accessInstance.state === "inactive" && !todayInactiveUsers.has(i)) {
+                const entryDate = getRandomDate(pastDate, new Date(currentDate.getTime() - 86400000));
+                accessInstance.entry_datetime = entryDate;
+                accessInstance.exit_datetime = new Date(entryDate.getTime() + 60 * 60 * 1000); 
+            } else if (accessInstance.state === "active" && !accessInstance.entry_datetime) {
+                const futureDate = getRandomDate(currentDate, new Date("2024-12-31T18:00:00"));
+                accessInstance.entry_datetime = futureDate;
+                accessInstance.exit_datetime = null; 
+                activeUsers.add(i);
+            } else if (accessInstance.state === "cancelled") {
+                accessInstance.entry_datetime = getRandomDate(new Date("2024-09-01T08:00:00"), new Date("2024-10-31T18:00:00"));
+                accessInstance.exit_datetime = null; 
+            }
+
+            await accessInstance.save();
+
+            if (accessInstance.state === "inactive" && accessInstance.exit_datetime !== null) {
+                const historyInstance = new accessHistory();
+                historyInstance.person_id = accessInstance.person_id;
+                historyInstance.room_id = accessInstance.room_id;
+                historyInstance.entry_datetime = accessInstance.entry_datetime;
+                historyInstance.exit_datetime = accessInstance.exit_datetime;
+                await historyInstance.save();
+            }
+
+            accessCount++;
         }
 
         console.log("===========================");

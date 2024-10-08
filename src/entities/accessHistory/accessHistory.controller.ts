@@ -6,13 +6,13 @@ import { room } from '../room/room';
 
 export const getAccessHistories = async (req: Request, res: Response) => {
     try {
-        const { start_date, end_date } = req.body;
+        const { start_date, end_date } = req.query;
 
         // 1. Validar fechas
-        if (!start_date || !end_date) {
+        if (!start_date || !end_date || typeof start_date !== 'string' || typeof end_date !== 'string') {
             return res.status(400).json({
                 success: false,
-                message: "Start date and end date are required in the request body"
+                message: "Start date and end date are required"
             });
         }
         const startDate = new Date(start_date);
@@ -62,7 +62,7 @@ export const getAccessHistories = async (req: Request, res: Response) => {
 
 export const getRoomAccessHistories = async (req: Request, res: Response) => {
     try {
-        const { start_date, end_date } = req.body;
+        const { start_date, end_date } = req.query;
         const room_id = parseInt(req.params.room_id);
 
         // 1. Validar room_id
@@ -74,10 +74,10 @@ export const getRoomAccessHistories = async (req: Request, res: Response) => {
         }
 
         // 2. Validar fechas
-        if (!start_date || !end_date) {
+        if (!start_date || !end_date || typeof start_date !== 'string' || typeof end_date !== 'string') {
             return res.status(400).json({
                 success: false,
-                message: "Start date and end date are required in the request body"
+                message: "Start date and end date are required"
             });
         }
         const startDate = new Date(start_date);
@@ -136,4 +136,4 @@ export const getRoomAccessHistories = async (req: Request, res: Response) => {
             error: error instanceof Error ? error.message : String(error)
         });
     }
-};
+}
