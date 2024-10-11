@@ -2,7 +2,7 @@
 
 Hello, and thank you for checking out my Naves Coworking backend project! I hope you enjoy exploring it. 🚀
 <br><br>
-<img src="" width="800">
+<img width="800" alt="LasNaves" src="img/lasnaves.jpg">
 </a>
 
 <details>
@@ -10,11 +10,9 @@ Hello, and thank you for checking out my Naves Coworking backend project! I hope
   <ol>
  <li><a href="#description">Description</a></li>
     <li><a href="#objetive">Objetive</a></li>
-    <li><a href="#deploy-">Deploy</a></li>
     <li><a href="#stack">Stack</a></li>
     <li><a href="#database-schema">Database Schema</a></li>
     <li><a href="#local-installation">Local installation</a></li>
-    <li><a href="#endpoints">Endpoints</a></li>
     <li><a href="#future-functionalities️">Future functionalities</a></li>
     <li><a href="#development">Development</a></li>
     <li><a href="#appreciations">Appreciations</a></li>
@@ -24,23 +22,14 @@ Hello, and thank you for checking out my Naves Coworking backend project! I hope
 <br>
 
 ## Description
-This project consists of transforming the management of a coworking space into a fluid and automated experience. Through an innovative application, the aim is to optimize access control, facilitating the real-time registration of user entries and exits. In addition, the tool will allow you to manage work room reservations and offer accurate administrative reports for more efficient decision making. All this, in an intuitive and easy-to-use environment, designed to modernize the administration of these collaborative spaces.
+The purpose of this project is to revolutionize the way coworking spaces are managed, creating a fully automated and seamless experience. Through a cutting-edge application, the goal is to streamline access control, allowing instant registration of user movements. Additionally, the platform will provide an efficient system for managing workroom bookings and generate detailed administrative reports, facilitating more strategic decision-making. Everything is designed to offer modern and accessible management, tailored to the needs of today’s shared workspaces.
+<br><br>
+<img width="600" alt="LasNaves" src="img/readme.jpg">
 
 ## Objetive
-Develop a comprehensive platform for managing access and room reservations that facilitates the efficient administration of spaces, guaranteeing a fluid experience for users.
-
-This system will allow users to register their accesses, make reservations, and consult their activity history, while administrators will be able to generate detailed reports and statistics on the use of the rooms. Through an intuitive interface and robust functionalities, it seeks to optimize the use of available resources, improve organization and provide a safe and accessible environment for all users.
-
-- **Efficiency:** Reduce the time and effort necessary to manage access and reservations.
-- **Transparency:** Provide a clear history of accesses and reservations for users and administrators.
-- **Data Analysis:** Allow administrators to make informed decisions based on usage statistics.
-- **Security:** Ensure that only authorized users have access to the rooms.
-
-
-## Deploy 
-<div align="center">
-    <a href=""><strong> Click here! </strong></a>🚀🚀🚀
-</div>
+The goal of this platform is to simplify the management of access and room reservations, offering an efficient and user-friendly solution that optimizes space administration. Users will be able to log their entries, book rooms, and review their past activities, while administrators will have access to detailed reports and statistical data that facilitate resource management. The platform focuses on maximizing efficiency, improving organization, and ensuring an accessible and secure environment for everyone.
+<br><br>
+<img width="600" alt="LasNaves" src="img/readme2.jpg">
 
 ## Stack
 <div align="center">
@@ -72,24 +61,25 @@ This system will allow users to register their accesses, make reservations, and 
 
 ## Database Schema
 
-    - Person - Access: A person can have multiple accesses. One to one relationship many.
+    - Person - Access: A person can be linked to several different accesses. One-to-many relationship.
 
-    - Room - Access: A room can have multiple entrances. One to many relationship.
+    - Room - Access: A room can register multiple accesses. One-to-many relationship.
 
-    - Person - Access_History: A person can have multiple access records access history. One to many relationship.
+    - Person - Access History: Each person can have multiple access records in their history. One-to-many relationship.
 
-    - Room - Access_History: A room can have multiple access history records access. One to many relationship.
+    - Room - Access History: Each room can have several records in its access history. One-to-many relationship.
 
-    - Access - Access_History: Each access generates a record in the access history access. One to one relationship.
+    - Access - Access History: Each individual access creates a corresponding record in the access history. One-to-one relationship.
 
 ## Local installation Backend
+
 1. Install docker and create a mysql container
-1. Clone the repository
-2.  ``` $ npm install  ```
-3. We connect our repository with the database
-4. ``` $ npm run dev ``` 
-5. ``` $ We execute the migrations $ npm run migrate ``` 
-6. ``` $ We run the seeders $ npm run db:seed ``` 
+2. Clone the repository
+3.  ``` $ npm install  ```
+4. We connect our repository with the database
+5. ``` $ npm run dev ``` 
+6. ``` $ We execute the migrations $ npm run migrate ``` 
+7. ``` $ We run the seeders $ npm run db:seed ``` 
 
 ### Local installation Frontend
 
@@ -98,8 +88,14 @@ This system will allow users to register their accesses, make reservations, and 
 3. ``` $ npm run dev ```
 
 ## Future functionalities
-- Internal social network or chat for networking
-- Advanced access control with facial or fingerprint recognition
+
+- Integration with virtual assistants to manage reservations and requests via voice commands.
+
+-Real-time occupancy analytics to optimize space usage.
+
+- Automated notifications for relevant events or meetings based on user interests.
+
+- Personalization of the work environment by adjusting lighting, temperature, or music in reserved rooms.
 
 ## Development 👨🏻‍💻
 
@@ -111,8 +107,7 @@ console.log("Developed by: " SantiagoAlfaro);
 
 ## Appreciations
 
-I would like to dedicate my thanks to the teachers at Geeks Hubs as well as my day to day peers with whom we can help each other with our problems.
-
+I want to express my gratitude to the instructors at Geeks Hubs and my colleagues, who continuously support one another in overcoming challenges.
 
 ## Contact
 **Santiago Alfaro Martí**
