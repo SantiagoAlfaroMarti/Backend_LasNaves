@@ -81,7 +81,7 @@ The goal of this platform is to simplify the management of access and room reser
 6. ``` $ We execute the migrations $ npm run migrate ``` 
 7. ``` $ We run the seeders $ npm run db:seed ``` 
 
-### Local installation Frontend 🔓
+## Local installation Frontend 🔓
 
 1. Clone the repository
 2. ``` $ npm install  ```
