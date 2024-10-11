@@ -12,7 +12,7 @@ export const personsSeeder = async () => {
         adminUser.email = "santi@santi.com";
         adminUser.password = bcrypt.hashSync("123456789", 10);
         adminUser.startup = "AdminCorp";
-        adminUser.dni = "47082901S";
+        adminUser.dni = "47072922S";
         adminUser.phone = "967221430";
         adminUser.role = "admin";
         await adminUser.save();
