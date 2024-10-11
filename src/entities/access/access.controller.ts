@@ -6,11 +6,11 @@ import { IsNull, LessThanOrEqual, MoreThan, MoreThanOrEqual } from 'typeorm';
 
 export const registerEntry = async (req: Request, res: Response) => {
     try {
-        // 1. Recuperar la información
+        
         const { room_id } = req.body;
         const person_id = req.tokenData.id;
 
-        // 2. Validar la información
+        
         if (!room_id) {
             return res.status(400).json({
                 success: false,
@@ -24,7 +24,7 @@ export const registerEntry = async (req: Request, res: Response) => {
             });
         }
 
-        // 3. Verificar si la sala existe y obtener su capacidad
+        
         const roomExists = await room.findOne({ where: { id: room_id } });
         if (!roomExists) {
             return res.status(404).json({
@@ -33,7 +33,7 @@ export const registerEntry = async (req: Request, res: Response) => {
             });
         }
 
-        // 4. Verificar si el usuario ya tiene una entrada activa
+        
         const activeEntry = await access.findOne({
             where: {
                 person_id: person_id,
@@ -48,7 +48,7 @@ export const registerEntry = async (req: Request, res: Response) => {
             });
         }
 
-        // 5. Verificar la capacidad actual de la sala
+        
         const currentOccupancy = await access.count({
             where: {
                 room_id: room_id,
@@ -64,7 +64,7 @@ export const registerEntry = async (req: Request, res: Response) => {
             });
         }
 
-        // 6. Crear nuevo registro de entrada
+        
         const currentDate = new Date();
         const newEntry = new access();
         newEntry.person_id = person_id;
@@ -73,7 +73,7 @@ export const registerEntry = async (req: Request, res: Response) => {
         newEntry.state = 'active';
         await newEntry.save();
 
-        // 7. Responder
+        
         res.status(201).json({
             success: true,
             message: "Entry registered successfully",
@@ -92,11 +92,11 @@ export const registerEntry = async (req: Request, res: Response) => {
 
 export const registerExit = async (req: Request, res: Response) => {
     try {
-        // 1. Recuperar la información
+        
         const { room_id } = req.body;
         const person_id = req.tokenData.id;
 
-        // 2. Validar la información
+        
         if (!room_id) {
             return res.status(400).json({
                 success: false,
@@ -110,7 +110,7 @@ export const registerExit = async (req: Request, res: Response) => {
             });
         }
 
-        // 3. Verificar si la sala existe
+        
         const roomExists = await room.findOne({ where: { id: room_id } });
         if (!roomExists) {
             return res.status(404).json({
@@ -121,8 +121,7 @@ export const registerExit = async (req: Request, res: Response) => {
 
         const currentDate = new Date();
 
-        // 4. Verificar si el usuario tiene una entrada activa en la sala especificada
-        // y que no sea una reserva futura
+        
         const activeEntry = await access.findOne({
             where: {
                 person_id: person_id,
@@ -140,12 +139,12 @@ export const registerExit = async (req: Request, res: Response) => {
             });
         }
 
-        // 5. Registrar la salida
+        
         activeEntry.exit_datetime = currentDate;
         activeEntry.state = 'inactive';
         await activeEntry.save();
 
-        // 6. Guardar en el historial de accesos
+        
         const historyEntry = new accessHistory();
         historyEntry.person_id = person_id;
         historyEntry.room_id = room_id;
@@ -153,7 +152,7 @@ export const registerExit = async (req: Request, res: Response) => {
         historyEntry.exit_datetime = currentDate;
         await historyEntry.save();
 
-        // 7. Responder
+        
         res.status(200).json({
             success: true,
             message: "Exit registered successfully and added to history",
@@ -175,11 +174,11 @@ export const registerExit = async (req: Request, res: Response) => {
 
 export const registerReserve = async (req: Request, res: Response) => {
     try {
-        // 1. Recuperar la información
+        
         const { room_id, entry_datetime } = req.body;
         const person_id = req.tokenData.id;
 
-        // 2. Validar la información
+        
         if (!room_id || !entry_datetime) {
             return res.status(400).json({
                 success: false,
@@ -196,7 +195,7 @@ export const registerReserve = async (req: Request, res: Response) => {
         const currentDate = new Date();
         const reservationDate = new Date(entry_datetime);
 
-        // Verificar que la fecha de entrada no sea en el pasado
+        
         if (reservationDate < currentDate) {
             return res.status(400).json({
                 success: false,
@@ -204,7 +203,7 @@ export const registerReserve = async (req: Request, res: Response) => {
             });
         }
 
-        // 3. Verificar si la sala existe
+        
         const roomExists = await room.findOne({ where: { id: room_id } });
         if (!roomExists) {
             return res.status(404).json({
@@ -213,7 +212,7 @@ export const registerReserve = async (req: Request, res: Response) => {
             });
         }
 
-        // 4. Verificar si el usuario ya tiene una reserva activa, entrada activa o está dentro de una sala
+        
         const userActiveAccess = await access.findOne({
             where: {
                 person_id: person_id,
@@ -226,7 +225,7 @@ export const registerReserve = async (req: Request, res: Response) => {
                 message: "User already has an active reservation or entry"
             });
         }
-        // 5. Verificar si la sala está disponible para el horario solicitado
+        
         const roomActiveAccesses = await access.count({
             where: {
                 room_id: room_id,
@@ -243,7 +242,7 @@ export const registerReserve = async (req: Request, res: Response) => {
             });
         }
 
-        // 6. Crear nueva reserva
+        
         const newReservation = new access();
         newReservation.person_id = person_id;
         newReservation.room_id = room_id;
@@ -251,7 +250,7 @@ export const registerReserve = async (req: Request, res: Response) => {
         newReservation.state = 'active';
         await newReservation.save();
 
-        // 7. Responder
+        
         res.status(201).json({
             success: true,
             message: "Reservation registered successfully",
@@ -270,11 +269,11 @@ export const registerReserve = async (req: Request, res: Response) => {
 
 export const cancelReservation = async (req: Request, res: Response) => {
     try {
-        // 1. Recuperar la información
+        
         const reservationId = parseInt(req.params.id);
         const person_id = req.tokenData.id;
 
-        // 2. Validar la información
+        
         if (isNaN(reservationId)) {
             return res.status(400).json({
                 success: false,
@@ -290,7 +289,7 @@ export const cancelReservation = async (req: Request, res: Response) => {
 
         const currentDate = new Date();
 
-        // 3. Buscar la reserva
+        
         const reservation = await access.findOne({
             where: {
                 id: reservationId,
@@ -306,7 +305,7 @@ export const cancelReservation = async (req: Request, res: Response) => {
             });
         }
 
-        // 4. Verificar si el usuario es el propietario de la reserva
+        
         if (reservation.person_id !== person_id) {
             return res.status(403).json({
                 success: false,
@@ -314,11 +313,11 @@ export const cancelReservation = async (req: Request, res: Response) => {
             });
         }
 
-        // 5. Actualizar el estado de la reserva a 'cancelled'
+        
         reservation.state = 'cancelled';
         await reservation.save();
 
-        // 6. Responder
+        
         res.status(200).json({
             success: true,
             message: "Reservation cancelled successfully"
@@ -372,7 +371,7 @@ export const currentRoomOccupants = async (req: Request, res: Response) => {
             });
         }
 
-        // 1. Verificar si la sala existe
+        
         const roomExists = await room.findOne({ where: { id: room_id } });
         if (!roomExists) {
             return res.status(404).json({
@@ -383,7 +382,7 @@ export const currentRoomOccupants = async (req: Request, res: Response) => {
 
         const now = new Date();
 
-        // 2. Obtener la lista de accesos activos actuales
+        
         const activeAccesses = await access.find({
             where: {
                 room_id: room_id,
@@ -402,7 +401,7 @@ export const currentRoomOccupants = async (req: Request, res: Response) => {
             });
         }
 
-        // 3. Crear una lista de las personas actualmente en la sala
+        
         const occupants = activeAccesses.map(entry => ({
             id: entry.person.id,
             name: entry.person.name,
@@ -411,7 +410,7 @@ export const currentRoomOccupants = async (req: Request, res: Response) => {
             dni: entry.person.dni
         }));
 
-        // 4. Responder con la lista de personas
+        
         return res.status(200).json({
             success: true,
             message: "Persons currently in the room",

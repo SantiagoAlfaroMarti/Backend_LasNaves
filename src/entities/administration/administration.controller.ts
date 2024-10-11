@@ -12,7 +12,7 @@ export const generateDailyReport = async (req: Request, res: Response) => {
         startOfMonth.setHours(0, 0, 0, 0);
         const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
 
-        // 1. Obtener los accesos desde el inicio del mes hasta hoy con detalles
+        
         const accesses = await access.find({
             where: {
                 entry_datetime: Between(startOfMonth, endOfToday),
@@ -23,7 +23,7 @@ export const generateDailyReport = async (req: Request, res: Response) => {
 
         const totalAccesses = accesses.length;
 
-        // 2. Obtener las ausencias (reservas canceladas) con detalles
+        
         const absences = await access.find({
             where: {
                 entry_datetime: Between(startOfMonth, endOfToday),
@@ -34,7 +34,7 @@ export const generateDailyReport = async (req: Request, res: Response) => {
 
         const totalAbsences = absences.length;
 
-        // 3. Obtener todos los usuarios con actividad completada en el período
+        
         const allActiveUsers = await access.createQueryBuilder("access")
             .select("access.person_id", "userId")
             .addSelect("COUNT(*)", "accessCount")
@@ -49,11 +49,11 @@ export const generateDailyReport = async (req: Request, res: Response) => {
             .orderBy("accessCount", "DESC")
             .getRawMany();
 
-        // 4. Separar usuarios frecuentes e infrecuentes
+        
         const frequentUsers = allActiveUsers.filter(user => parseInt(user.accessCount) > 3);
         const infrequentUsers = allActiveUsers.filter(user => parseInt(user.accessCount) <= 3);
 
-        // 5. Preparar datos detallados para la respuesta
+        
         const detailedReport = {
             report_period: {
                 start_date: startOfMonth,
@@ -82,7 +82,7 @@ export const generateDailyReport = async (req: Request, res: Response) => {
             }))
         };
 
-        // 6. Guardar el informe en la base de datos
+        
         const newReport = new administration();
         newReport.report_date = now;
         newReport.total_accesses = totalAccesses;
@@ -91,7 +91,7 @@ export const generateDailyReport = async (req: Request, res: Response) => {
         newReport.infrequent_users = JSON.stringify(detailedReport.infrequent_users);
         await newReport.save();
 
-        // 7. Responder
+        
         res.status(201).json({
             success: true,
             message: "Daily report generated and saved successfully",
@@ -110,12 +110,12 @@ export const generateDailyReport = async (req: Request, res: Response) => {
 
 export const getRoomUsageStats = async (req: Request, res: Response) => {
     try {
-        // 1. Calcular el primer día del mes actual y el día actual
+        
         const now = new Date();
         const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
 
-        // 2. Obtener todos los accesos desde el inicio del mes hasta hoy
+        
         const accesses = await access.find({
             where: {
                 entry_datetime: Between(startDate, endDate)
@@ -123,20 +123,20 @@ export const getRoomUsageStats = async (req: Request, res: Response) => {
             relations: ['room']
         });
 
-        // 3. Obtener todas las salas
+        
         const rooms = await room.find();
 
-        // 4. Calcular el número de días transcurridos en el mes
+        
         const daysInPeriod = now.getDate();
 
-        // 5. Calcular estadísticas para cada sala
+        
         const roomStats = rooms.map(room => {
             const roomAccesses = accesses.filter(a => a.room.id === room.id);
             const completedAccesses = roomAccesses.filter(a => a.exit_datetime !== null);
             const cancelledAccesses = roomAccesses.filter(a => a.state === 'cancelled');
             const totalAccesses = roomAccesses.length - cancelledAccesses.length;
 
-            // Calcular horas totales de uso y duración promedio solo para accesos completados
+            
             let totalHours = 0;
             let totalDuration = 0;
 
@@ -161,12 +161,12 @@ export const getRoomUsageStats = async (req: Request, res: Response) => {
             };
         });
 
-        // 6. Calcular estadísticas globales
+        
         const totalAccesses = roomStats.reduce((sum, stat) => sum + stat.total_accesses, 0);
         const totalCancellations = roomStats.reduce((sum, stat) => sum + stat.cancelled_accesses, 0);
         const totalHoursUsed = roomStats.reduce((sum, stat) => sum + stat.total_hours_used, 0);
 
-        // 7. Preparar la respuesta
+        
         const response = {
             period: `${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`,
             days_in_period: daysInPeriod,
@@ -176,7 +176,7 @@ export const getRoomUsageStats = async (req: Request, res: Response) => {
             room_stats: roomStats
         };
 
-        // 8. Enviar la respuesta
+        
         res.status(200).json({
             success: true,
             message: "Room usage statistics from the beginning of the month to today retrieved successfully",
@@ -213,7 +213,7 @@ export const getDateReport = async (req: Request, res: Response) => {
             });
         }
 
-        // 1. Obtener los accesos del período con detalles
+        
         const accesses = await access.find({
             where: {
                 entry_datetime: Between(startDate, endDate),
@@ -224,7 +224,7 @@ export const getDateReport = async (req: Request, res: Response) => {
 
         const totalAccesses = accesses.length;
 
-        // 2. Obtener las ausencias (reservas canceladas) con detalles
+        
         const absences = await access.find({
             where: {
                 entry_datetime: Between(startDate, endDate),
@@ -235,7 +235,7 @@ export const getDateReport = async (req: Request, res: Response) => {
 
         const totalAbsences = absences.length;
 
-        // 3. Obtener todos los usuarios con actividad completada en el período
+        
         const allActiveUsers = await access.createQueryBuilder("access")
             .select("access.person_id", "userId")
             .addSelect("COUNT(*)", "accessCount")
@@ -250,11 +250,11 @@ export const getDateReport = async (req: Request, res: Response) => {
             .orderBy("accessCount", "DESC")
             .getRawMany();
 
-        // 4. Separar usuarios frecuentes e infrecuentes
+        
         const frequentUsers = allActiveUsers.filter(user => parseInt(user.accessCount) > 3);
         const infrequentUsers = allActiveUsers.filter(user => parseInt(user.accessCount) <= 3);
 
-        // 5. Preparar datos detallados para la respuesta
+        
         const detailedReport = {
             report_period: {
                 start_date: startDate,
@@ -283,7 +283,7 @@ export const getDateReport = async (req: Request, res: Response) => {
             }))
         };
 
-        // 6. Guardar el informe en la base de datos
+        
         const newReport = new administration();
         newReport.report_date = startDate;
         newReport.total_accesses = totalAccesses;
@@ -292,7 +292,7 @@ export const getDateReport = async (req: Request, res: Response) => {
         newReport.infrequent_users = JSON.stringify(detailedReport.infrequent_users);
         await newReport.save();
 
-        // 7. Responder
+        
         res.status(201).json({
             success: true,
             message: "Custom report generated and saved successfully",

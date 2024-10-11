@@ -15,7 +15,7 @@ export const getCurrentAccess = async (req: Request, res: Response) => {
             });
         }
 
-        // 1. Verificar si la persona existe
+        
         const personInfo = await person.findOne({ 
             where: { id: person_id },
             select: ['id', 'name', 'surnames', 'email', 'dni']
@@ -28,7 +28,7 @@ export const getCurrentAccess = async (req: Request, res: Response) => {
             });
         }
 
-        // 2. Obtener el acceso actual de la persona
+        
         const currentAccess = await access.findOne({
             where: {
                 person_id: person_id,
@@ -38,7 +38,7 @@ export const getCurrentAccess = async (req: Request, res: Response) => {
             relations: ['room']
         });
 
-        // 3. Preparar la respuesta
+        
         let accessInfo;
         if (currentAccess) {
             accessInfo = {
@@ -53,7 +53,7 @@ export const getCurrentAccess = async (req: Request, res: Response) => {
             current_access: accessInfo || null
         };
 
-        // 4. Enviar la respuesta
+        
         return res.status(200).json({
             success: true,
             message: "Current access retrieved successfully",
@@ -81,7 +81,7 @@ export const getAccessHistory = async (req: Request, res: Response) => {
             });
         }
 
-        // 1. Verificar si la persona existe
+        
         const personInfo = await person.findOne({ 
             where: { id: person_id },
             select: ['id', 'name', 'surnames', 'email', 'dni']
@@ -93,14 +93,14 @@ export const getAccessHistory = async (req: Request, res: Response) => {
             });
         }
 
-        // 2. Obtener el historial de accesos de la persona
+        
         const accessHistoryList = await accessHistory.find({
             where: { person_id: person_id },
             relations: ['room'],
             order: { entry_datetime: 'DESC' }
         });
 
-        // 3. Preparar la respuesta
+        
         const formattedHistory = accessHistoryList.map(entry => ({
             access_id: entry.id,
             room_id: entry.room.id,
@@ -114,7 +114,7 @@ export const getAccessHistory = async (req: Request, res: Response) => {
             access_history: formattedHistory
         };
 
-        // 4. Enviar la respuesta
+        
         return res.status(200).json({
             success: true,
             message: "Access history retrieved successfully",

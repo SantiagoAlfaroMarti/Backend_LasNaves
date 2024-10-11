@@ -14,7 +14,7 @@ export const getCurrentRoomStatus = async (req: Request, res: Response) => {
             });
         }
 
-        // 1. Obtener información de la sala
+        
         const roomInfo = await room.findOne({ 
             where: { id: room_id },
             select: ['id', 'room_name', 'capacity', 'room_type']
@@ -28,7 +28,7 @@ export const getCurrentRoomStatus = async (req: Request, res: Response) => {
 
         const currentDate = new Date();
 
-        // 2. Obtener la lista de personas actualmente en la sala
+        
         const currentOccupants = await access.find({
             where: {
                 room_id: room_id,
@@ -39,7 +39,7 @@ export const getCurrentRoomStatus = async (req: Request, res: Response) => {
             relations: ['person']
         });
 
-        // 3. Crear la lista de personas presentes
+        
         const occupantsList = currentOccupants.map(entry => ({
             id: entry.person.id,
             name: entry.person.name,
@@ -48,7 +48,7 @@ export const getCurrentRoomStatus = async (req: Request, res: Response) => {
             dni: entry.person.dni
         }));
 
-        // 4. Obtener el número de reservas futuras
+        
         const futureReservations = await access.count({
             where: {
                 room_id: room_id,
@@ -57,7 +57,7 @@ export const getCurrentRoomStatus = async (req: Request, res: Response) => {
             }
         });
 
-        // 5. Preparar la respuesta
+        
         const roomStatus = {
             id: roomInfo.id,
             room_name: roomInfo.room_name,
@@ -68,7 +68,7 @@ export const getCurrentRoomStatus = async (req: Request, res: Response) => {
             occupants: occupantsList
         };
 
-        // 6. Enviar la respuesta
+        
         return res.status(200).json({
             success: true,
             message: "Room status retrieved successfully",
